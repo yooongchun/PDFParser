@@ -34,7 +34,9 @@ def search_page(path):
 def target(lines, rules):
     target_info = []
     for line in lines:
-        items = line.split(' ')
+        items = re.split(r'\s+', line)
+        if len(items) < 3:
+            items = re.split(r'\s', line)
         if not isinstance(items, list) or len(items) < 2:
             continue
         for rule in rules:
@@ -56,7 +58,7 @@ def saver(out_path, rules):
         info = []
         if os.path.isfile(file) and os.path.splitext(file)[1] == '.tmp':
             code = re.split('-', file)[1]
-            name = re.split(r'[\-:：]', file)[2]
+            name = re.split(r'[\-：:]', file)[2]
             with open(file, 'r', encoding='utf-8') as fp:
                 lines = fp.readlines()
             for line in lines:
@@ -70,6 +72,9 @@ def saver(out_path, rules):
                     if one[0] == rule:
                         csheet.write(sheet.nrows + index, ind2 + 2, str(one[1]))
     cbook.save(out_path)
+    for file in files:
+        if os.path.isfile(file) and os.path.splitext(file)[1] == '.tmp':
+            os.remove(file)
 
 
 def load_demo(path):
@@ -155,6 +160,6 @@ if __name__ == '__main__':
     demo = r'C:\Users\fanyu\Desktop\PaidProject\16_Tables_PDF_extractor\Demo.xls'
     with open('errorList.txt', 'w', encoding='utf-8')as fp:
         fp.write(str(datetime.now()) + '\n\n')
-    # batch_parser(base_dir, demo)
+    batch_parser(base_dir, demo)
     saver(demo, load_demo(demo)[2:])
     print('Program finished!')

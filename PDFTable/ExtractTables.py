@@ -12,9 +12,9 @@ from . import multi_process
 
 
 class Extractor(object):
-    def __init__(self, file_path):
+    def __init__(self, file_path, rules):
         self.file_path = file_path
-
+        self.rules = rules
     def parse_pages(self):
         try:
             pages = []
